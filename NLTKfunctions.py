@@ -1,17 +1,19 @@
 from nltk.metrics import agreement  # skipped for now
 from nltk.metrics import association  # skipped for now
-from nltk.metrics import confusionmatrix
-from nltk.metrics import distance
-from nltk.metrics import scores
-from nltk.metrics import segmentation
-from nltk.metrics import spearman
-from nltk.misc import sort
-from nltk.sem import glue
-from nltk.sem import linearlogic
+from nltk.metrics import confusionmatrix as nltk_confusionmatrix
+from nltk.metrics import distance as nltk_distance
+from nltk.metrics import scores as nltk_scores
+from nltk.metrics import segmentation as nltk_segmentation
+from nltk.metrics import spearman as nltk_spearman
+from nltk.misc import sort as nltk_sort
+from nltk.sem import glue as nltk_glue
+from nltk.sem import linearlogic as nltk_linearlogic
+from nltk.sem import logic as nltk_logic
+from nltk.sem import util as nltk_util
 
 
-def confusion_matrix(reference, test, sort_by_count=False):
-    return confusionmatrix.ConfusionMatrix(reference, test, sort_by_count)
+# def confusion_matrix(reference, test, sort_by_count=False):
+#    return nltk_confusionmatrix.ConfusionMatrix(reference, test, sort_by_count)
 
 
 def binary_distance(label1, label2):
@@ -26,14 +28,14 @@ def binary_distance(label1, label2):
     >>> binary_distance(1,3)
     1.0
     """
-    return distance.binary_distance(label1, label2)
+    return nltk_distance.binary_distance(label1, label2)
 
 
 def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity.
 
     """
-    return distance.jaccard_distance(label1, label2)
+    return nltk_distance.jaccard_distance(label1, label2)
 
 
 def masi_distance(label1, label2):
@@ -47,7 +49,7 @@ def masi_distance(label1, label2):
     Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI)
     for Semantic and Pragmatic Annotation.
     """
-    return distance.masi_distance(label1, label2)
+    return nltk_distance.masi_distance(label1, label2)
 
 
 def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
@@ -74,7 +76,7 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     :type transpositions: bool
     :rtype int
     """
-    return distance.edit_distance(s1, s2, substitution_cost, transpositions)
+    return nltk_distance.edit_distance(s1, s2, substitution_cost, transpositions)
 
 
 def interval_distance(label1, label2):
@@ -86,21 +88,21 @@ def interval_distance(label1, label2):
 
     Krippendorff 1980, Content Analysis: An Introduction to its Methodology
     """
-    return distance.interval_distance(label1, label2)
+    return nltk_distance.interval_distance(label1, label2)
 
 
 def presence(label):
     """Higher-order function to test presence of a given label
     """
-    return distance.presence(label)
+    return nltk_distance.presence(label)
 
 
 def fractional_presence(label):
-    return distance.fractional_presence(label)
+    return nltk_distance.fractional_presence(label)
 
 
 def custom_distance(file):
-    return distance.custom_distance(file)
+    return nltk_distance.custom_distance(file)
 
 
 def accuracy(reference, test):
@@ -118,7 +120,7 @@ def accuracy(reference, test):
     :raise ValueError: If ``reference`` and ``length`` do not have the
         same length.
     """
-    return scores.accuracy(reference, test)
+    return nltk_scores.accuracy(reference, test)
 
 
 def precision(reference, test):
@@ -134,7 +136,7 @@ def precision(reference, test):
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
-    return scores.precision(reference, test)
+    return nltk_scores.precision(reference, test)
 
 
 def recall(reference, test):
@@ -150,7 +152,7 @@ def recall(reference, test):
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
-    return scores.recall(reference, test)
+    return nltk_scores.recall(reference, test)
 
 
 def f_measure(reference, test, alpha=0.5):
@@ -177,7 +179,7 @@ def f_measure(reference, test, alpha=0.5):
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
-    return scores.f_measure(reference, test, alpha)
+    return nltk_scores.f_measure(reference, test, alpha)
 
 
 def log_likelihood(reference, test):
@@ -192,7 +194,7 @@ def log_likelihood(reference, test):
         compare against the corresponding reference values.
     :type test: list(ProbDistI)
     """
-    return scores.log_likelihood(reference, test)
+    return nltk_scores.log_likelihood(reference, test)
 
 
 # def approxrand(a, b, **kwargs):
@@ -227,7 +229,7 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     :type weighted: boolean
     :rtype: float
     """
-    return segmentation.windowdiff(seg1, seg2, k, boundary, weighted)
+    return nltk_segmentation.windowdiff(seg1, seg2, k, boundary, weighted)
 
 
 def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary='1'):
@@ -275,7 +277,7 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary='1'
     :type boundary: str or int or bool
     :rtype: float
     """
-    return segmentation.ghd(ref, hyp, ins_cost, del_cost, shift_cost_coeff, boundary)
+    return nltk_segmentation.ghd(ref, hyp, ins_cost, del_cost, shift_cost_coeff, boundary)
 
 
 def pk(ref, hyp, k=None, boundary='1'):
@@ -302,11 +304,11 @@ def pk(ref, hyp, k=None, boundary='1'):
     :type boundary: str or int or bool
     :rtype: float
     """
-    return segmentation.pk(ref, hyp, k, boundary)
+    return nltk_segmentation.pk(ref, hyp, k, boundary)
 
 
 def setup_module(module):
-    return segmentation.setup_module(module)
+    return nltk_segmentation.setup_module(module)
 
 
 def spearman_correlation(ranks1, ranks2):
@@ -315,14 +317,14 @@ def spearman_correlation(ranks1, ranks2):
     -1.0 (ranks are opposite) to 1.0 (ranks are identical), and is only
     calculated for keys in both rankings (for meaningful results, remove keys
     present in only one list before ranking)."""
-    return spearman.spearman_correlation(ranks1, ranks2)
+    return nltk_spearman.spearman_correlation(ranks1, ranks2)
 
 
 def ranks_from_sequence(seq):
     """Given a sequence, yields each element with an increasing rank, suitable
     for use as an argument to ``spearman_correlation``.
     """
-    return spearman.ranks_from_sequence(seq)
+    return nltk_spearman.ranks_from_sequence(seq)
 
 
 def ranks_from_scores(scores, rank_gap=1e-15):
@@ -331,7 +333,7 @@ def ranks_from_scores(scores, rank_gap=1e-15):
         their scores is less than rank_gap. Suitable for use as an argument to
         ``spearman_correlation``.
         """
-    return spearman.ranks_from_scores(scores, rank_gap)
+    return nltk_spearman.ranks_from_scores(scores, rank_gap)
 
 
 def selection(a):
@@ -340,7 +342,7 @@ def selection(a):
     swap it with the first element.  The remainder of the list is one
     element smaller; apply the same method to this list, and so on.
     """
-    return sort.selection(a)
+    return nltk_sort.selection(a)
 
 
 def bubble(a):
@@ -351,7 +353,7 @@ def bubble(a):
     the rightmost position.  The remainder is one element smaller;
     apply the same method to this list, and so on.
     """
-    return sort.bubble(a)
+    return nltk_sort.bubble(a)
 
 
 def merge(a):
@@ -359,44 +361,252 @@ def merge(a):
     Merge Sort: split the list in half, and sort each half, then
     combine the sorted halves.
     """
-    return sort.merge(a)
+    return nltk_sort.merge(a)
 
 
 def quick(a):
-    return sort.quick(a)
+    return nltk_sort.quick(a)
 
 
-def glue_formula(obj):
-    return glue.GlueFormula(obj)
+'''def glue_formula(object_in):
+    return nltk_glue.GlueFormula(object_in)
 
 
 def glue_dict(dictionary):
-    return glue.GlueDict(dictionary)
+    return nltk_glue.GlueDict(dictionary)
 
 
-def glue(obj):
-    return glue.Glue(obj)
+def glue(object_in):
+    return nltk_glue.Glue(object_in)
 
 
-def drt_glue_formula(glue_formula):
-    return glue.DrtGlueFormula(glue_formula)
+def drt_glue_formula(glue_formula_in):
+    return nltk_glue.DrtGlueFormula(glue_formula_in)
 
 
 def drt_glue(glue_in):
-    return glue.DrtGlue(glue_in)
+    return nltk_glue.DrtGlue(glue_in)'''  # all just objects
 
-
-def linear_logic_parser(logic_parser):
+'''def linear_logic_parser(logic_parser):
     """A linear logic expression parser."""
-    return linearlogic.LinearLogicParser(logic_parser)
+    return nltk_linearlogic.LinearLogicParser(logic_parser)
 
 
-def expression(obj):
-    return linearlogic.Expression(obj)
+def expression(object_in):
+    return nltk_linearlogic.Expression(object_in)
 
 
-confusionmatrix.demo()
-distance.demo()
-scores.demo()
-sort.demo()
-glue.demo()
+def atomic_expression(expression_in):
+    return nltk_linearlogic.AtomicExpression(expression_in)
+
+
+def constant_expression(atomic_expression_in):
+    return nltk_linearlogic.ConstantExpression(atomic_expression_in)
+
+
+def variable_expression(atomic_expression_in):
+    return nltk_linearlogic.VariableExpression(atomic_expression_in)
+
+
+def imp_expression(expression_in):
+    return nltk_linearlogic.ImpExpression(expression_in)
+
+
+def application_expression(expression_in):
+    return nltk_linearlogic.ApplicationExpression(expression_in)
+
+
+def binding_dict(object_in):
+    return nltk_linearlogic.BindingDict(object_in)'''  # More objects
+
+'''def tokens(object_in):
+    return nltk_logic.Tokens(object_in)'''  # More objects
+
+
+def boolean_ops():
+    """
+    Boolean operators
+    """
+    return nltk_logic.boolean_ops()
+
+
+def equality_preds():
+    """
+    Equality predicates
+    """
+    return nltk_logic.equality_preds()
+
+
+def binding_ops():
+    """
+    Binding operators
+    """
+    return nltk_logic.binding_ops()
+
+
+'''def logic_parser(object_in):
+    return nltk_logic.LogicParser(object_in)'''  # Another object
+
+
+def read_logic(s, logic_parser=None, encoding=None):
+    """
+    Convert a file of First Order Formulas into a list of {Expression}s.
+
+    :param s: the contents of the file
+    :type s: str
+    :param logic_parser: The parser to be used to parse the logical expression
+    :type logic_parser: LogicParser
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
+    :return: a list of parsed formulas.
+    :rtype: list(Expression)
+    """
+    return nltk_logic.read_logic(s, logic_parser, encoding)
+
+
+'''def variable(object_in):
+    return nltk_logic.Variable(object_in)'''  # after this point, will no longer include objects
+
+
+def unique_variable(pattern=None, ignore=None):
+    """
+    Return a new, unique variable.
+
+    :param pattern: ``Variable`` that is being replaced.  The new variable must
+        be the same type.
+    :param term: a set of ``Variable`` objects that should not be returned from
+        this function.
+    :rtype: Variable
+    """
+    return nltk_logic.unique_variable(pattern, ignore)
+
+
+def skolem_function(univ_scope=None):
+    """
+    Return a skolem function over the variables in univ_scope
+    param univ_scope
+    """
+    return nltk_logic.skolem_function(univ_scope)
+
+
+def read_type(type_string):
+    return nltk_logic.read_type(type_string)
+
+
+def typecheck(expressions, signature=None):
+    """
+    Ensure correct typing across a collection of ``Expression`` objects.
+    :param expressions: a collection of expressions
+    :param signature: dict that maps variable names to types (or string
+    representations of types)
+    """
+    return nltk_logic.typecheck(expressions, signature)
+
+
+def variable_expression(variable):
+    """
+    This is a factory method that instantiates and returns a subtype of
+    ``AbstractVariableExpression`` appropriate for the given variable.
+    """
+    return nltk_logic.Variable(variable)
+
+
+def is_indvar(expr):
+    """
+    An individual variable must be a single lowercase character other than 'e',
+    followed by zero or more digits.
+
+    :param expr: str
+    :return: bool True if expr is of the correct form
+    """
+    return nltk_logic.is_indvar(expr)
+
+
+def is_funcvar(expr):
+    """
+    A function variable must be a single uppercase character followed by
+    zero or more digits.
+
+    :param expr: str
+    :return: bool True if expr is of the correct form
+    """
+    return nltk_logic.is_funcvar(expr)
+
+
+def is_eventvar(expr):
+    """
+    An event variable must be a single lowercase 'e' character followed by
+    zero or more digits.
+
+    :param expr: str
+    :return: bool True if expr is of the correct form
+    """
+    return nltk_logic.is_eventvar(expr)
+
+
+def parse_sents(inputs, grammar, trace=0):
+    """
+    Convert input sentences into syntactic trees.
+
+    :param inputs: sentences to be parsed
+    :type inputs: list(str)
+    :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: nltk.grammar.FeatureGrammar
+    :rtype: list(nltk.tree.Tree) or dict(list(str)): list(Tree)
+    :return: a mapping from input sentences to a list of ``Tree``s
+    """
+    return nltk_util.parse_sents(inputs, grammar, trace)
+
+
+def root_semrep(syntree, semkey='SEM'):
+    """
+    Find the semantic representation at the root of a tree.
+
+    :param syntree: a parse ``Tree``
+    :param semkey: the feature label to use for the root semantics in the tree
+    :return: the semantic representation at the root of a ``Tree``
+    :rtype: sem.Expression
+    """
+    return nltk_util.root_semrep(syntree, semkey)
+
+
+def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
+    """
+    Add the semantic representation to each syntactic parse tree
+    of each input sentence.
+
+    :param inputs: a list of sentences
+    :type inputs: list(str)
+    :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: nltk.grammar.FeatureGrammar
+    :return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
+    :rtype: list(list(tuple(nltk.tree.Tree, nltk.sem.logic.ConstantExpression)))
+    """
+    return nltk_util.interpret_sents(inputs, grammar, semkey, trace)
+
+
+def evaluate_sents(inputs, grammar, model, assignment, trace=0):
+    """
+    Add the truth-in-a-model value to each semantic representation
+    for each syntactic parse of each input sentences.
+
+    :param inputs: a list of sentences
+    :type inputs: list(str)
+    :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: nltk.grammar.FeatureGrammar
+    :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
+    :rtype: list(list(tuple(nltk.tree.Tree, nltk.sem.logic.ConstantExpression, bool or dict(str): bool)))
+    """
+    return nltk_util.evaluate_sents(inputs, grammar, model, assignment, trace)
+
+
+nltk_confusionmatrix.demo()
+nltk_distance.demo()
+nltk_scores.demo()
+nltk_sort.demo()
+# nltk_glue.demo() #doesn't even work in NLTK source code
+nltk_linearlogic.demo()
+nltk_logic.demo()
+nltk_util.demo()
+#nltk_util.demo_legacy_grammar()
+#nltk_util.demo_model0()
