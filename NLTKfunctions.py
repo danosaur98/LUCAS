@@ -7,6 +7,7 @@ from nltk.metrics import segmentation
 from nltk.metrics import spearman
 from nltk.misc import sort
 from nltk.sem import glue
+from nltk.sem import linearlogic
 
 
 def confusion_matrix(reference, test, sort_by_count=False):
@@ -377,15 +378,25 @@ def glue(obj):
     return glue.Glue(obj)
 
 
-def drt_glue_formula(GlueFormula):
-    return glue.DrtGlueFormula(GlueFormula)
+def drt_glue_formula(glue_formula):
+    return glue.DrtGlueFormula(glue_formula)
 
 
 def drt_glue(glue_in):
     return glue.DrtGlue(glue_in)
 
 
+def linear_logic_parser(logic_parser):
+    """A linear logic expression parser."""
+    return linearlogic.LinearLogicParser(logic_parser)
+
+
+def expression(obj):
+    return linearlogic.Expression(obj)
+
+
 confusionmatrix.demo()
 distance.demo()
 scores.demo()
 sort.demo()
+glue.demo()
