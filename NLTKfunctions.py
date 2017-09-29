@@ -381,6 +381,9 @@ def drt_glue_formula(GlueFormula):
     return glue.DrtGlueFormula(GlueFormula)
 
 
+def drt_glue(glue_in):
+    return glue.DrtGlue(glue_in)
+
 
 confusionmatrix.demo()
 distance.demo()
