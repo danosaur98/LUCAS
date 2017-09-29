@@ -377,6 +377,11 @@ def glue(obj):
     return glue.Glue(obj)
 
 
+def drt_glue_formula(GlueFormula):
+    return glue.DrtGlueFormula(GlueFormula)
+
+
+
 confusionmatrix.demo()
 distance.demo()
 scores.demo()
