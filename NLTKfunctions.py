@@ -1,19 +1,120 @@
-from nltk.metrics import agreement  # skipped for now
-from nltk.metrics import association  # skipped for now
-from nltk.metrics import confusionmatrix as nltk_confusionmatrix
-from nltk.metrics import distance as nltk_distance
-from nltk.metrics import scores as nltk_scores
-from nltk.metrics import segmentation as nltk_segmentation
-from nltk.metrics import spearman as nltk_spearman
-from nltk.misc import sort as nltk_sort
-from nltk.sem import glue as nltk_glue
-from nltk.sem import linearlogic as nltk_linearlogic
-from nltk.sem import logic as nltk_logic
-from nltk.sem import util as nltk_util
+from nltk.classify import weka as nltk_weka  # mostly objects
+from nltk.parse import api as nltk_api  # objects
+from nltk.parse import chart as nltk_chart  # all objects
+from nltk.parse import dependencygraph as nltk_dependencygraph  # all objects
+from nltk.parse import earleychart as nltk_earleychart  # all objects
+from nltk.parse import featurechart as nltk_featurechart  # all objects
+from nltk.parse import nonprojectivedependencyparser as nltk_nonprojectivedependencyparser  # all objects
+from nltk.parse import pchart as nltk_pchart  # all objects
+from nltk.parse import viterbi as nltk_viterbi  # all objects
+from nltk.stem import api as nltk_stem_api  # all objects
+from nltk.stem import isri as nltk_isri  # all objects
+from nltk.stem import lancaster as nltk_lancaster  # all objects
+from nltk.stem import regexp as nltk_regexp  # all objects
+from nltk.stem import wordnet as nltk_wordnet  # half objects
+from nltk.tag import brill as nltk_brill  # few objects
+from nltk.tag import hunpos as nltk_hunpos  # all objects
+from nltk.tag import mapping as nltk_mapping  # no objects
+from nltk.cluster import api as nltk_cluster_api  # objects
+from nltk.cluster import em as nltk_em  # objects
+from nltk.cluster import gaac as nltk_gaac  # objects
+from nltk.cluster import kmeans as nltk_kmeans  # objects
+import nltk.collocations as nltk_collocations  # is a class, not a module
+from nltk.inference import discourse as nltk_discourse  # objects
+from nltk.inference import nonmonotonic as nltk_nonmonotic #almost all objects
+from nltk.metrics import agreement  # objects
+from nltk.metrics import association  # objects
+from nltk.metrics import confusionmatrix as nltk_confusionmatrix  # objects
+from nltk.metrics import distance as nltk_distance  # no objects
+from nltk.metrics import scores as nltk_scores  # no objects
+from nltk.metrics import segmentation as nltk_segmentation  # no objects
+from nltk.metrics import spearman as nltk_spearman  # no objects
+from nltk.misc import sort as nltk_sort  # no objects
+from nltk.sem import glue as nltk_glue  # objects
+from nltk.sem import linearlogic as nltk_linearlogic  # objects
+from nltk.sem import logic as nltk_logic  # some objects
+from nltk.sem import util as nltk_util  # no objects
+from nltk.tbl import erroranalysis as nltk_erroranalysis  # no objects
 
 
 # def confusion_matrix(reference, test, sort_by_count=False):
 #    return nltk_confusionmatrix.ConfusionMatrix(reference, test, sort_by_count)
+
+def config_weka(classpath=None):
+    return nltk_weka.config_weka(classpath)
+
+
+def teardown_module(module_in=None):
+    return nltk_wordnet.teardown_module(module_in)
+
+
+def nltkdemo18():
+    """
+    Return 18 templates, from the original nltk demo, in multi-feature syntax
+    """
+    return nltk_brill.nltkdemo18()
+
+
+def nltkdemo18plus():
+    """
+    Return 18 templates, from the original nltk demo, and additionally a few
+    multi-feature ones (the motivation is easy comparison with nltkdemo18)
+    """
+    return nltk_brill.nltkdemo18plus()
+
+
+def fntbl37():
+    """
+    Return 37 templates taken from the postagging task of the
+    fntbl distribution http://www.cs.jhu.edu/~rflorian/fntbl/
+    (37 is after excluding a handful which do not condition on Pos[0];
+    fntbl can do that but the current nltk implementation cannot.)
+    """
+    return nltk_brill.fntbl37()
+
+
+def brill24():
+    """
+    Return 24 templates of the seminal TBL paper, Brill (1995)
+    """
+    return nltk_brill.brill24()
+
+
+def describe_template_sets():
+    """
+    Print the available template sets in this demo, with a short description"
+    """
+    return nltk_brill.describe_template_sets()
+
+
+def tagset_mapping(source, target):
+    """
+    Retrieve the mapping dictionary between tagsets.
+
+    >>> tagset_mapping('ru-rnc', 'universal') == {'!': '.', 'A': 'ADJ', 'C': 'CONJ', 'AD': 'ADV',\
+            'NN': 'NOUN', 'VG': 'VERB', 'COMP': 'CONJ', 'NC': 'NUM', 'VP': 'VERB', 'P': 'ADP',\
+            'IJ': 'X', 'V': 'VERB', 'Z': 'X', 'VI': 'VERB', 'YES_NO_SENT': 'X', 'PTCL': 'PRT'}
+    True
+    """
+    return nltk_mapping.tagset_mapping(source, target)
+
+
+def map_tag(source, target, source_tag):
+    """
+    Maps the tag from the source tagset to the target tagset.
+
+    >>> map_tag('en-ptb', 'universal', 'VBZ')
+    'VERB'
+    >>> map_tag('en-ptb', 'universal', 'VBP')
+    'VERB'
+    >>> map_tag('en-ptb', 'universal', '``')
+    '.'
+    """
+    return nltk_mapping.map_tag()
+
+
+def get_domain(goal, assumptions):
+    return nltk_nonmonotic.get_domain(goal, assumptions)
 
 
 def binary_distance(label1, label2):
@@ -307,8 +408,8 @@ def pk(ref, hyp, k=None, boundary='1'):
     return nltk_segmentation.pk(ref, hyp, k, boundary)
 
 
-def setup_module(module):
-    return nltk_segmentation.setup_module(module)
+def setup_module(module_in):
+    return nltk_segmentation.setup_module(module_in)
 
 
 def spearman_correlation(ranks1, ranks2):
@@ -600,6 +701,34 @@ def evaluate_sents(inputs, grammar, model, assignment, trace=0):
     return nltk_util.evaluate_sents(inputs, grammar, model, assignment, trace)
 
 
+def read_sents(filename, encoding='utf8'):
+    return nltk_util.read_sents(filename, encoding)
+
+
+def error_list(train_sents, test_sents):
+    """
+    Returns a list of human-readable strings indicating the errors in the
+    given tagging of the corpus.
+
+    :param train_sents: The correct tagging of the corpus
+    :type train_sents: list(tuple)
+    :param test_sents: The tagged corpus
+    :type test_sents: list(tuple)
+    """
+    return nltk_erroranalysis.error_list(train_sents, test_sents)
+
+
+nltk_chart.demo()
+nltk_dependencygraph.demo()
+nltk_earleychart.demo()
+nltk_featurechart.demo()
+nltk_nonprojectivedependencyparser.demo()
+nltk_pchart.demo()
+nltk_viterbi.demo()
+nltk_em.demo()
+nltk_gaac.demo()
+nltk_kmeans.demo()
+nltk_discourse.demo()
 nltk_confusionmatrix.demo()
 nltk_distance.demo()
 nltk_scores.demo()
@@ -608,5 +737,3 @@ nltk_sort.demo()
 nltk_linearlogic.demo()
 nltk_logic.demo()
 nltk_util.demo()
-#nltk_util.demo_legacy_grammar()
-#nltk_util.demo_model0()
