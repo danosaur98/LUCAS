@@ -1,3 +1,7 @@
+from nltk.app import chartparser_app as nltk_chartparser_app
+from nltk.app import rdparser_app as nltk_rdparser_app
+from nltk.ccg import chart as nltk_chart
+from nltk.ccg import lexicon as nltk_lexicon
 from nltk.classify import weka as nltk_weka  # mostly objects
 from nltk.parse import api as nltk_api  # objects
 from nltk.parse import chart as nltk_chart  # all objects
@@ -21,7 +25,7 @@ from nltk.cluster import gaac as nltk_gaac  # objects
 from nltk.cluster import kmeans as nltk_kmeans  # objects
 import nltk.collocations as nltk_collocations  # is a class, not a module
 from nltk.inference import discourse as nltk_discourse  # objects
-from nltk.inference import nonmonotonic as nltk_nonmonotic #almost all objects
+from nltk.inference import nonmonotonic as nltk_nonmonotic  # almost all objects
 from nltk.metrics import agreement  # objects
 from nltk.metrics import association  # objects
 from nltk.metrics import confusionmatrix as nltk_confusionmatrix  # objects
@@ -35,6 +39,251 @@ from nltk.sem import linearlogic as nltk_linearlogic  # objects
 from nltk.sem import logic as nltk_logic  # some objects
 from nltk.sem import util as nltk_util  # no objects
 from nltk.tbl import erroranalysis as nltk_erroranalysis  # no objects
+
+
+# def EdgeList(ColorizedList): #not sure how to implement this
+#    return nltk_chartparser_app.EdgeList()
+
+
+def ChartMatrixView(parent, chart, toplevel=True, title='ChartMatrix', show_numedges=False):
+    """
+    A view of a chart that displays the contents of the corresponding matrix.
+    """
+    return nltk_chartparser_app.ChartMatrixView(parent, chart, toplevel, title, show_numedges)
+
+
+def ChartResultsView(parent, chart, grammar, toplevel=True):
+    return nltk_chartparser_app.ChartResultsView(parent, chart, grammar, toplevel)
+
+
+def ChartComparer(*chart_filenames):
+    """
+
+        :ivar _root: The root window
+
+        :ivar _charts: A dictionary mapping names to charts.  When
+            charts are loaded, they are added to this dictionary.
+
+        :ivar _left_chart: The left ``Chart``.
+        :ivar _left_name: The name ``_left_chart`` (derived from filename)
+        :ivar _left_matrix: The ``ChartMatrixView`` for ``_left_chart``
+        :ivar _left_selector: The drop-down ``MutableOptionsMenu`` used
+              to select ``_left_chart``.
+
+        :ivar _right_chart: The right ``Chart``.
+        :ivar _right_name: The name ``_right_chart`` (derived from filename)
+        :ivar _right_matrix: The ``ChartMatrixView`` for ``_right_chart``
+        :ivar _right_selector: The drop-down ``MutableOptionsMenu`` used
+              to select ``_right_chart``.
+
+        :ivar _out_chart: The out ``Chart``.
+        :ivar _out_name: The name ``_out_chart`` (derived from filename)
+        :ivar _out_matrix: The ``ChartMatrixView`` for ``_out_chart``
+        :ivar _out_label: The label for ``_out_chart``.
+
+        :ivar _op_label: A Label containing the most recent operation.
+        """
+    return nltk_chartparser_app.ChartComparer(*chart_filenames);
+
+
+def ChartView(chart, root=None, **kw):
+    """
+    A component for viewing charts.  This is used by ``ChartParserApp`` to
+    allow students to interactively experiment with various chart
+    parsing techniques.  It is also used by ``Chart.draw()``.
+
+    :ivar _chart: The chart that we are giving a view of.  This chart
+       may be modified; after it is modified, you should call
+       ``update``.
+    :ivar _sentence: The list of tokens that the chart spans.
+
+    :ivar _root: The root window.
+    :ivar _chart_canvas: The canvas we're using to display the chart
+        itself.
+    :ivar _tree_canvas: The canvas we're using to display the tree
+        that each edge spans.  May be None, if we're not displaying
+        trees.
+    :ivar _sentence_canvas: The canvas we're using to display the sentence
+        text.  May be None, if we're not displaying the sentence text.
+    :ivar _edgetags: A dictionary mapping from edges to the tags of
+        the canvas elements (lines, etc) used to display that edge.
+        The values of this dictionary have the form
+        ``(linetag, rhstag1, dottag, rhstag2, lhstag)``.
+    :ivar _treetags: A list of all the tags that make up the tree;
+        used to erase the tree (without erasing the loclines).
+    :ivar _chart_height: The height of the chart canvas.
+    :ivar _sentence_height: The height of the sentence canvas.
+    :ivar _tree_height: The height of the tree
+
+    :ivar _text_height: The height of a text string (in the normal
+        font).
+
+    :ivar _edgelevels: A list of edges at each level of the chart (the
+        top level is the 0th element).  This list is used to remember
+        where edges should be drawn; and to make sure that no edges
+        are overlapping on the chart view.
+
+    :ivar _unitsize: Pixel size of one unit (from the location).  This
+       is determined by the span of the chart's location, and the
+       width of the chart display canvas.
+
+    :ivar _fontsize: The current font size
+
+    :ivar _marks: A dictionary from edges to marks.  Marks are
+        strings, specifying colors (e.g. 'green').
+    """
+    return nltk_chartparser_app.ChartView(chart, root, **kw)
+
+
+def EdgeRule(edge):
+    """
+    To create an edge rule, make an empty base class that uses
+    EdgeRule as the first base class, and the basic rule as the
+    second base class.  (Order matters!)
+    """
+    return nltk_chartparser_app.EdgeRule(edge)
+
+
+def ChartParserApp(grammar, tokens, title='Chart Parser Application'):
+    return nltk_chartparser_app.ChartParserApp(grammar, tokens, title)
+
+
+def RecursiveDescentApp(grammar, sent, trace=0):
+    return nltk_rdparser_app.RecursiveDescentApp(grammar, sent, trace)
+
+
+def CCGEdge(span, categ, rule):
+    return nltk_chart.CCGEdge(span, categ, rule)
+
+
+def CCGLeafEdge(pos, token, leaf):
+    return nltk_chart.CCGLeafEdge(pos, token, leaf)
+
+
+def BinaryCombinatorRule(combinator):
+    '''
+    Class implementing application of a binary combinator to a chart.
+    Takes the directed combinator to apply.
+    '''
+    return nltk_chart.BinaryCombinatorRule(combinator)
+
+
+def ForwardTypeRaiseRule():
+    '''
+    Class for applying forward type raising
+    '''
+    return nltk_chart.ForwardTypeRaiseRule
+
+
+def BackwardTypeRaiseRule(AbstractChartRule):
+    '''
+    Class for applying backward type raising.
+    '''
+    return nltk_chart.BackwardTypeRaiseRule
+
+
+def CCGChartParser(lexicon, rules, trace=0):
+    '''
+    Chart parser for CCGs.
+    Based largely on the ChartParser class from NLTK.
+    '''
+    return nltk_chart.CCGChart(lexicon, rules, trace)
+
+
+def CCGChart(tokens):
+    return nltk_chart.CCGChart(tokens)
+
+
+def compute_semantics(children, edge):
+    return nltk_chart.compute_semantics(children, edge)
+
+
+def printCCGDerivation(tree):
+    return nltk_chart.printCCGDerivation(tree)
+
+
+def printCCGTree(lwidth, tree):
+    return nltk_chart.printCCGTree(lwidth, tree)
+
+
+def Token(token, categ, semantics=None):
+    """
+    Class representing a token.
+
+    token => category {semantics}
+    e.g. eat => S\\var[pl]/var {\\x y.eat(x,y)}
+
+    * `token` (string)
+    * `categ` (string)
+    * `semantics` (Expression)
+    """
+    return nltk_lexicon.Token(token, categ, semantics)
+
+
+def CCGLexicon(start, primitives, families, entries):
+    """
+    Class representing a lexicon for CCG grammars.
+
+    * `primitives`: The list of primitive categories for the lexicon
+    * `families`: Families of categories
+    * `entries`: A mapping of words to possible categories
+    """
+    return nltk_lexicon.CCGLexicon(start, primitives, families, entries)
+
+
+def matchBrackets(string):
+    """
+    Separate the contents matching the first set of brackets from the rest of
+    the input.
+    """
+    return nltk_lexicon.matchBrackets(string)
+
+
+def nextCategory(string):
+    """
+    Separate the string for the next portion of the category from the rest
+    of the string
+    """
+    return nextCategory(string)
+
+
+def parseApplication(app):
+    """
+    Parse an application operator
+    """
+    return nltk_lexicon.parseApplication(app[0], app[1:])
+
+
+def parseSubscripts(subscr):
+    """
+    Parse the subscripts for a primitive category
+    """
+    return nltk_lexicon.parseSubscripts(subscr)
+
+
+def parsePrimitiveCategory(chunks, primitives, families, var):
+    """
+    Parse a primitive category
+
+    If the primitive is the special category 'var', replace it with the
+    correct `CCGVar`.
+    """
+    return nltk_lexicon.parsePrimitiveCategory(chunks, primitives, families, var)
+
+
+def augParseCategory(line, primitives, families, var=None):
+    """
+    Parse a string representing a category, and returns a tuple with
+    (possibly) the CCG variable for the category
+    """
+    return nltk_lexicon.augParseCategory(line, primitives, families, var)
+
+
+def fromstring(lex_str, include_semantics=False):
+    """
+    Convert string representation into a lexicon for CCGs.
+    """
+    return nltk_lexicon.fromstring(lex_str, include_semantics)
 
 
 # def confusion_matrix(reference, test, sort_by_count=False):
@@ -110,7 +359,7 @@ def map_tag(source, target, source_tag):
     >>> map_tag('en-ptb', 'universal', '``')
     '.'
     """
-    return nltk_mapping.map_tag()
+    return nltk_mapping.map_tag(source, target, source_tag)
 
 
 def get_domain(goal, assumptions):
@@ -299,7 +548,7 @@ def log_likelihood(reference, test):
 
 
 # def approxrand(a, b, **kwargs):
-# return scores.approxrand(a, b, kwargs)
+#     return nltk_scores.approxrand(a, b, **kwargs)
 
 def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     """
@@ -408,8 +657,8 @@ def pk(ref, hyp, k=None, boundary='1'):
     return nltk_segmentation.pk(ref, hyp, k, boundary)
 
 
-def setup_module(module_in):
-    return nltk_segmentation.setup_module(module_in)
+def setup_module(module):
+    return nltk_segmentation.setup_module(module)
 
 
 def spearman_correlation(ranks1, ranks2):
@@ -486,11 +735,13 @@ def drt_glue_formula(glue_formula_in):
 
 
 def drt_glue(glue_in):
-    return nltk_glue.DrtGlue(glue_in)'''  # all just objects
+    return nltk_glue.DrtGlue(glue_in)  # all just objects
 
-'''def linear_logic_parser(logic_parser):
+
+def linear_logic_parser(logic_parser):
     """A linear logic expression parser."""
     return nltk_linearlogic.LinearLogicParser(logic_parser)
+
 
 
 def expression(object_in):
@@ -518,10 +769,12 @@ def application_expression(expression_in):
 
 
 def binding_dict(object_in):
-    return nltk_linearlogic.BindingDict(object_in)'''  # More objects
+    return nltk_linearlogic.BindingDict(object_in)  # More objects
 
-'''def tokens(object_in):
-    return nltk_logic.Tokens(object_in)'''  # More objects
+
+def tokens(object_in):
+    return nltk_logic.Tokens(object_in)  # More objects
+'''
 
 
 def boolean_ops():
@@ -718,6 +971,8 @@ def error_list(train_sents, test_sents):
     return nltk_erroranalysis.error_list(train_sents, test_sents)
 
 
+nltk_chartparser_app.app()
+nltk_rdparser_app.app()
 nltk_chart.demo()
 nltk_dependencygraph.demo()
 nltk_earleychart.demo()
