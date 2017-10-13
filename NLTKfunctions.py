@@ -1,10 +1,10 @@
 from nltk.app import chartparser_app as nltk_chartparser_app
 from nltk.app import rdparser_app as nltk_rdparser_app
-from nltk.ccg import chart as nltk_chart
+from nltk.ccg import chart as nltk_ccg_chart
 from nltk.ccg import lexicon as nltk_lexicon
 from nltk.classify import weka as nltk_weka  # mostly objects
-from nltk.parse import api as nltk_api  # objects
-from nltk.parse import chart as nltk_chart  # all objects
+from nltk.parse import api as nltk_api  # object referenced by other code
+from nltk.parse import chart as nltk_parse_chart  # all objects, some don't have an init
 from nltk.parse import dependencygraph as nltk_dependencygraph  # all objects
 from nltk.parse import earleychart as nltk_earleychart  # all objects
 from nltk.parse import featurechart as nltk_featurechart  # all objects
@@ -132,6 +132,9 @@ def ChartView(chart, root=None, **kw):
     :ivar _marks: A dictionary from edges to marks.  Marks are
         strings, specifying colors (e.g. 'green').
     """
+    """
+    Construct a new ``Chart`` display.
+    """
     return nltk_chartparser_app.ChartView(chart, root, **kw)
 
 
@@ -153,11 +156,14 @@ def RecursiveDescentApp(grammar, sent, trace=0):
 
 
 def CCGEdge(span, categ, rule):
-    return nltk_chart.CCGEdge(span, categ, rule)
+    return nltk_ccg_chart.CCGEdge(span, categ, rule)
 
 
 def CCGLeafEdge(pos, token, leaf):
-    return nltk_chart.CCGLeafEdge(pos, token, leaf)
+    '''
+    Class representing leaf edges in a CCG derivation.
+    '''
+    return nltk_ccg_chart.CCGLeafEdge(pos, token, leaf)
 
 
 def BinaryCombinatorRule(combinator):
@@ -165,21 +171,21 @@ def BinaryCombinatorRule(combinator):
     Class implementing application of a binary combinator to a chart.
     Takes the directed combinator to apply.
     '''
-    return nltk_chart.BinaryCombinatorRule(combinator)
+    return nltk_ccg_chart.BinaryCombinatorRule(combinator)
 
 
 def ForwardTypeRaiseRule():
     '''
     Class for applying forward type raising
     '''
-    return nltk_chart.ForwardTypeRaiseRule
+    return nltk_ccg_chart.ForwardTypeRaiseRule
 
 
-def BackwardTypeRaiseRule(AbstractChartRule):
+def BackwardTypeRaiseRule():
     '''
     Class for applying backward type raising.
     '''
-    return nltk_chart.BackwardTypeRaiseRule
+    return nltk_ccg_chart.BackwardTypeRaiseRule
 
 
 def CCGChartParser(lexicon, rules, trace=0):
@@ -187,23 +193,23 @@ def CCGChartParser(lexicon, rules, trace=0):
     Chart parser for CCGs.
     Based largely on the ChartParser class from NLTK.
     '''
-    return nltk_chart.CCGChart(lexicon, rules, trace)
+    return nltk_ccg_chart.CCGChartParser(lexicon, rules, trace)
 
 
 def CCGChart(tokens):
-    return nltk_chart.CCGChart(tokens)
+    return nltk_ccg_chart.CCGChart(tokens)
 
 
 def compute_semantics(children, edge):
-    return nltk_chart.compute_semantics(children, edge)
+    return nltk_ccg_chart.compute_semantics(children, edge)
 
 
 def printCCGDerivation(tree):
-    return nltk_chart.printCCGDerivation(tree)
+    return nltk_ccg_chart.printCCGDerivation(tree)
 
 
 def printCCGTree(lwidth, tree):
-    return nltk_chart.printCCGTree(lwidth, tree)
+    return nltk_ccg_chart.printCCGTree(lwidth, tree)
 
 
 def Token(token, categ, semantics=None):
@@ -244,7 +250,7 @@ def nextCategory(string):
     Separate the string for the next portion of the category from the rest
     of the string
     """
-    return nextCategory(string)
+    return nltk_lexicon.nextCategory(string)
 
 
 def parseApplication(app):
@@ -291,6 +297,490 @@ def fromstring(lex_str, include_semantics=False):
 
 def config_weka(classpath=None):
     return nltk_weka.config_weka(classpath)
+
+
+def WekaClassifier(formatter, model_filename):
+    return nltk_weka.WekaClassifier(formatter, model_filename)
+
+
+def ARFF_Formatter(labels, features):
+    """
+    Converts featuresets and labeled featuresets to ARFF-formatted
+    strings, appropriate for input into Weka.
+
+    Features and classes can be specified manually in the constructor, or may
+    be determined from data using ``from_train``.
+    """
+    """
+    :param labels: A list of all class labels that can be generated.
+    :param features: A list of feature specifications, where
+        each feature specification is a tuple (fname, ftype);
+        and ftype is an ARFF type string such as NUMERIC or
+        STRING.
+    """
+    return nltk_weka.ARFF_Formatter(labels, features)
+
+
+def TreeEdge(span, lhs, rhs, dot=0):
+    """
+    An edge that records the fact that a tree is (partially)
+    consistent with the sentence.  A tree edge consists of:
+
+    - A span, indicating what part of the sentence is
+      consistent with the hypothesized tree.
+    - A left-hand side, specifying the hypothesized tree's node
+      value.
+    - A right-hand side, specifying the hypothesized tree's
+      children.  Each element of the right-hand side is either a
+      terminal, specifying a token with that terminal as its leaf
+      value; or a nonterminal, specifying a subtree with that
+      nonterminal's symbol as its node value.
+    - A dot position, indicating which children are consistent
+      with part of the sentence.  In particular, if ``dot`` is the
+      dot position, ``rhs`` is the right-hand size, ``(start,end)``
+      is the span, and ``sentence`` is the list of tokens in the
+      sentence, then ``tokens[start:end]`` can be spanned by the
+      children specified by ``rhs[:dot]``.
+
+    For more information about edges, see the ``EdgeI`` interface.
+    """
+    """
+    Construct a new ``TreeEdge``.
+
+    :type span: tuple(int, int)
+    :param span: A tuple ``(s, e)``, where ``tokens[s:e]`` is the
+        portion of the sentence that is consistent with the new
+        edge's structure.
+    :type lhs: Nonterminal
+    :param lhs: The new edge's left-hand side, specifying the
+        hypothesized tree's node value.
+    :type rhs: list(Nonterminal and str)
+    :param rhs: The new edge's right-hand side, specifying the
+        hypothesized tree's children.
+    :type dot: int
+    :param dot: The position of the new edge's dot.  This position
+        specifies what prefix of the production's right hand side
+        is consistent with the text.  In particular, if
+        ``sentence`` is the list of tokens in the sentence, then
+        ``okens[span[0]:span[1]]`` can be spanned by the
+        children specified by ``rhs[:dot]``.
+    """
+    return nltk_parse_chart.TreeEdge(span, lhs, rhs, dot)
+
+
+def LeafEdge(leaf, index):
+    """
+    An edge that records the fact that a leaf value is consistent with
+    a word in the sentence.  A leaf edge consists of:
+
+    - An index, indicating the position of the word.
+    - A leaf, specifying the word's content.
+
+    A leaf edge's left-hand side is its leaf value, and its right hand
+    side is ``()``.  Its span is ``[index, index+1]``, and its dot
+    position is ``0``.
+    """
+    """
+    Construct a new ``LeafEdge``.
+
+    :param leaf: The new edge's leaf value, specifying the word
+        that is recorded by this edge.
+    :param index: The new edge's index, specifying the position of
+        the word that is recorded by this edge.
+    """
+    return nltk_parse_chart.LeafEdge(leaf, index)
+
+
+def Chart(tokens):
+    """
+    A blackboard for hypotheses about the syntactic constituents of a
+    sentence.  A chart contains a set of edges, and each edge encodes
+    a single hypothesis about the structure of some portion of the
+    sentence.
+
+    The ``select`` method can be used to select a specific collection
+    of edges.  For example ``chart.select(is_complete=True, start=0)``
+    yields all complete edges whose start indices are 0.  To ensure
+    the efficiency of these selection operations, ``Chart`` dynamically
+    creates and maintains an index for each set of attributes that
+    have been selected on.
+
+    In order to reconstruct the trees that are represented by an edge,
+    the chart associates each edge with a set of child pointer lists.
+    A child pointer list is a list of the edges that license an
+    edge's right-hand side.
+
+    :ivar _tokens: The sentence that the chart covers.
+    :ivar _num_leaves: The number of tokens.
+    :ivar _edges: A list of the edges in the chart
+    :ivar _edge_to_cpls: A dictionary mapping each edge to a set
+        of child pointer lists that are associated with that edge.
+    :ivar _indexes: A dictionary mapping tuples of edge attributes
+        to indices, where each index maps the corresponding edge
+        attribute values to lists of edges.
+    """
+    """
+    Construct a new chart. The chart is initialized with the
+    leaf edges corresponding to the terminal leaves.
+
+    :type tokens: list
+    :param tokens: The sentence that this chart will be used to parse.
+    """
+    return nltk_parse_chart.Chart(tokens)
+
+
+def CachedTopDownPredictRule(TopDownPredictRule):
+    """
+    A cached version of ``TopDownPredictRule``.  After the first time
+    this rule is applied to an edge with a given ``end`` and ``next``,
+    it will not generate any more edges for edges with that ``end`` and
+    ``next``.
+
+    If ``chart`` or ``grammar`` are changed, then the cache is flushed.
+    """
+    return nltk_parse_chart.CachedTopDownPredictRule()
+
+
+########################################################################
+##  Generic Chart Parser
+########################################################################
+
+TD_STRATEGY = [nltk_parse_chart.LeafInitRule(),
+               nltk_parse_chart.TopDownInitRule(),
+               nltk_parse_chart.CachedTopDownPredictRule(),
+               nltk_parse_chart.SingleEdgeFundamentalRule()]
+BU_STRATEGY = [nltk_parse_chart.LeafInitRule(),
+               nltk_parse_chart.EmptyPredictRule(),
+               nltk_parse_chart.BottomUpPredictRule(),
+               nltk_parse_chart.SingleEdgeFundamentalRule()]
+BU_LC_STRATEGY = [nltk_parse_chart.LeafInitRule(),
+                  nltk_parse_chart.EmptyPredictRule(),
+                  nltk_parse_chart.BottomUpPredictCombineRule(),
+                  nltk_parse_chart.SingleEdgeFundamentalRule()]
+
+LC_STRATEGY = [nltk_parse_chart.LeafInitRule(),
+               nltk_parse_chart.FilteredBottomUpPredictCombineRule(),
+               nltk_parse_chart.FilteredSingleEdgeFundamentalRule()]
+
+
+def ChartParser(grammar, strategy=BU_LC_STRATEGY, trace=0,
+                trace_chart_width=50, use_agenda=True, chart_class=Chart):
+    """
+    A generic chart parser.  A "strategy", or list of
+    ``ChartRuleI`` instances, is used to decide what edges to add to
+    the chart.  In particular, ``ChartParser`` uses the following
+    algorithm to parse texts:
+
+    | Until no new edges are added:
+    |   For each *rule* in *strategy*:
+    |     Apply *rule* to any applicable edges in the chart.
+    | Return any complete parses in the chart
+    """
+    """
+    Create a new chart parser, that uses ``grammar`` to parse
+    texts.
+
+    :type grammar: CFG
+    :param grammar: The grammar used to parse texts.
+    :type strategy: list(ChartRuleI)
+    :param strategy: A list of rules that should be used to decide
+        what edges to add to the chart (top-down strategy by default).
+    :type trace: int
+    :param trace: The level of tracing that should be used when
+        parsing a text.  ``0`` will generate no tracing output;
+        and higher numbers will produce more verbose tracing
+        output.
+    :type trace_chart_width: int
+    :param trace_chart_width: The default total width reserved for
+        the chart in trace output.  The remainder of each line will
+        be used to display edges.
+    :type use_agenda: bool
+    :param use_agenda: Use an optimized agenda-based algorithm,
+        if possible.
+    :param chart_class: The class that should be used to create
+        the parse charts.
+    """
+    return nltk_parse_chart.ChartParser(grammar, strategy, trace, trace_chart_width,
+                                        use_agenda, chart_class)
+
+
+def TopDownChartParser(grammar, **parser_args):
+    """
+    A ``ChartParser`` using a top-down parsing strategy.
+    See ``ChartParser`` for more information.
+    """
+    return nltk_parse_chart.TopDownChartParser(grammar, **parser_args)
+
+
+def BottomUpChartParser(grammar, **parser_args):
+    """
+    A ``ChartParser`` using a bottom-up parsing strategy.
+    See ``ChartParser`` for more information.
+    """
+    return nltk_parse_chart.TopDownChartParser(grammar, **parser_args)
+
+
+def BottomUpLeftCornerChartParser(grammar, **parser_args):
+    """
+    A ``ChartParser`` using a bottom-up left-corner parsing strategy.
+    This strategy is often more efficient than standard bottom-up.
+    See ``ChartParser`` for more information.
+    """
+    return nltk_parse_chart.BottomUpLeftCornerChartParser(grammar, **parser_args)
+
+
+def LeftCornerChartParser(grammar, **parser_args):
+    return nltk_parse_chart.LeftCornerChartParser(grammar, **parser_args)
+
+
+def SteppingChartParser(grammar, strategy=[], trace=0):
+    """
+    A ``ChartParser`` that allows you to step through the parsing
+    process, adding a single edge at a time.  It also allows you to
+    change the parser's strategy or grammar midway through parsing a
+    text.
+
+    The ``initialize`` method is used to start parsing a text.  ``step``
+    adds a single edge to the chart.  ``set_strategy`` changes the
+    strategy used by the chart parser.  ``parses`` returns the set of
+    parses that has been found by the chart parser.
+
+    :ivar _restart: Records whether the parser's strategy, grammar,
+        or chart has been changed.  If so, then ``step`` must restart
+        the parsing algorithm.
+    """
+    return nltk_parse_chart.SteppingChartParser(grammar, strategy, trace)
+
+
+def DependencyGraph(tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None,
+                    top_relation_label='ROOT'):
+    """
+    A container for the nodes and labelled edges of a dependency structure.
+    """
+    """Dependency graph.
+
+    We place a dummy `TOP` node with the index 0, since the root node is
+    often assigned 0 as its head. This also means that the indexing of the
+    nodes corresponds directly to the Malt-TAB format, which starts at 1.
+
+    If zero-based is True, then Malt-TAB-like input with node numbers
+    starting at 0 and the root node assigned -1 (as produced by, e.g.,
+    zpar).
+
+    :param str cell_separator: the cell separator. If not provided, cells
+    are split by whitespace.
+
+    :param str top_relation_label: the label by which the top relation is
+    identified, for examlple, `ROOT`, `null` or `TOP`.
+
+    """
+    return nltk_dependencygraph.DependencyGraph(tree_str, cell_extractor, zero_based, cell_separator,
+                                                top_relation_label)
+
+
+# ////////////////////////////////////////////////////////////
+# Incremental CFG Chart Parsers
+# ////////////////////////////////////////////////////////////
+
+EARLEY_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                   nltk_earleychart.TopDownInitRule(),
+                   nltk_earleychart.CompleterRule(),
+                   nltk_earleychart.ScannerRule(),
+                   nltk_earleychart.PredictorRule()]
+TD_INCREMENTAL_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                           nltk_earleychart.TopDownInitRule(),
+                           nltk_earleychart.CachedTopDownPredictRule(),
+                           nltk_earleychart.CompleteFundamentalRule()]
+BU_INCREMENTAL_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                           nltk_earleychart.EmptyPredictRule(),
+                           nltk_earleychart.BottomUpPredictRule(),
+                           nltk_earleychart.CompleteFundamentalRule()]
+BU_LC_INCREMENTAL_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                              nltk_earleychart.EmptyPredictRule(),
+                              nltk_earleychart.BottomUpPredictCombineRule(),
+                              nltk_earleychart.CompleteFundamentalRule()]
+
+LC_INCREMENTAL_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                           nltk_earleychart.FilteredBottomUpPredictCombineRule(),
+                           nltk_earleychart.FilteredCompleteFundamentalRule()]
+
+
+def IncrementalChartParser(grammar, strategy=BU_LC_INCREMENTAL_STRATEGY,
+                           trace=0, trace_chart_width=50,
+                           chart_class=nltk_earleychart.IncrementalChart):
+    """
+    An *incremental* chart parser implementing Jay Earley's
+    parsing algorithm:
+
+    | For each index end in [0, 1, ..., N]:
+    |   For each edge such that edge.end = end:
+    |     If edge is incomplete and edge.next is not a part of speech:
+    |       Apply PredictorRule to edge
+    |     If edge is incomplete and edge.next is a part of speech:
+    |       Apply ScannerRule to edge
+    |     If edge is complete:
+    |       Apply CompleterRule to edge
+    | Return any complete parses in the chart
+    """
+    """
+    Create a new Earley chart parser, that uses ``grammar`` to
+    parse texts.
+
+    :type grammar: CFG
+    :param grammar: The grammar used to parse texts.
+    :type trace: int
+    :param trace: The level of tracing that should be used when
+        parsing a text.  ``0`` will generate no tracing output;
+        and higher numbers will produce more verbose tracing
+        output.
+    :type trace_chart_width: int
+    :param trace_chart_width: The default total width reserved for
+        the chart in trace output.  The remainder of each line will
+        be used to display edges.
+    :param chart_class: The class that should be used to create
+        the charts used by this parser.
+    """
+    return nltk_earleychart.IncrementalChartParser(grammar, strategy, trace, trace_chart_width, chart_class)
+
+
+def EarleyChartParser(grammar, **parser_args):
+    return nltk_earleychart.EarleyChartParser(grammar, **parser_args)
+
+
+def IncrementalTopDownChartParser(grammar, **parser_args):
+    return nltk_earleychart.IncrementalTopDownChartParser(grammar, **parser_args)
+
+
+def IncrementalBottomUpChartParser(grammar, **parser_args):
+    return nltk_earleychart.IncrementalBottomUpChartParser(grammar, **parser_args)
+
+
+def IncrementalBottomUpLeftCornerChartParser(grammar, **parser_args):
+    return nltk_earleychart.IncrementalBottomUpLeftCornerChartParser(grammar, **parser_args)
+
+
+def IncrementalLeftCornerChartParser(grammar, **parser_args):
+    return nltk_earleychart.IncrementalLeftCornerChartParser(grammar, **parser_args)
+
+
+# ////////////////////////////////////////////////////////////
+# Incremental FCFG Chart Parsers
+# ////////////////////////////////////////////////////////////
+
+EARLEY_FEATURE_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                           nltk_earleychart.FeatureTopDownInitRule(),
+                           nltk_earleychart.FeatureCompleterRule(),
+                           nltk_earleychart.FeatureScannerRule(),
+                           nltk_earleychart.FeaturePredictorRule()]
+TD_INCREMENTAL_FEATURE_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                                   nltk_earleychart.FeatureTopDownInitRule(),
+                                   nltk_earleychart.FeatureTopDownPredictRule(),
+                                   nltk_earleychart.FeatureCompleteFundamentalRule()]
+BU_INCREMENTAL_FEATURE_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                                   nltk_earleychart.FeatureEmptyPredictRule(),
+                                   nltk_earleychart.FeatureBottomUpPredictRule(),
+                                   nltk_earleychart.FeatureCompleteFundamentalRule()]
+BU_LC_INCREMENTAL_FEATURE_STRATEGY = [nltk_earleychart.LeafInitRule(),
+                                      nltk_earleychart.FeatureEmptyPredictRule(),
+                                      nltk_earleychart.FeatureBottomUpPredictCombineRule(),
+                                      nltk_earleychart.FeatureCompleteFundamentalRule()]
+
+
+def FeatureIncrementalChartParser(grammar,
+                                  strategy=BU_LC_INCREMENTAL_FEATURE_STRATEGY,
+                                  trace_chart_width=20,
+                                  chart_class=nltk_earleychart.FeatureIncrementalChart,
+                                  **parser_args):
+    return nltk_earleychart.FeatureIncrementalChartParser(grammar, strategy, trace_chart_width, chart_class,
+                                                          **parser_args)
+
+
+def FeatureEarleyChartParser(grammar, **parser_args):
+    return nltk_earleychart.FeatureEarleyChartParser(grammar, **parser_args)
+
+
+def FeatureIncrementalTopDownChartParser(grammar, **parser_args):
+    return nltk_earleychart.FeatureIncrementalTopDownChartParser(grammar, **parser_args)
+
+
+def FeatureIncrementalBottomUpChartParser(grammar, **parser_args):
+    return nltk_earleychart.FeatureIncrementalBottomUpChartParser(grammar, **parser_args)
+
+
+def FeatureIncrementalBottomUpLeftCornerChartParser(grammar, **parser_args):
+    return nltk_earleychart.FeatureIncrementalBottomUpLeftCornerChartParser(grammar, **parser_args)
+
+
+def FeatureTreeEdge(span, lhs, rhs, dot=0, bindings=None):
+    """
+    A specialized tree edge that allows shared variable bindings
+    between nonterminals on the left-hand side and right-hand side.
+
+    Each ``FeatureTreeEdge`` contains a set of ``bindings``, i.e., a
+    dictionary mapping from variables to values.  If the edge is not
+    complete, then these bindings are simply stored.  However, if the
+    edge is complete, then the constructor applies these bindings to
+    every nonterminal in the edge whose symbol implements the
+    interface ``SubstituteBindingsI``.
+    """
+    """
+    Construct a new edge.  If the edge is incomplete (i.e., if
+    ``dot<len(rhs)``), then store the bindings as-is.  If the edge
+    is complete (i.e., if ``dot==len(rhs)``), then apply the
+    bindings to all nonterminals in ``lhs`` and ``rhs``, and then
+    clear the bindings.  See ``TreeEdge`` for a description of
+    the other arguments.
+    """
+    return nltk_featurechart.FeatureTreeEdge(span, lhs, rhs, dot, bindings)
+
+
+# ////////////////////////////////////////////////////////////
+# Feature Chart Parser
+# ////////////////////////////////////////////////////////////
+
+TD_FEATURE_STRATEGY = [nltk_featurechart.LeafInitRule(),
+                       nltk_featurechart.FeatureTopDownInitRule(),
+                       nltk_featurechart.FeatureTopDownPredictRule(),
+                       nltk_featurechart.FeatureSingleEdgeFundamentalRule()]
+BU_FEATURE_STRATEGY = [nltk_featurechart.LeafInitRule(),
+                       nltk_featurechart.FeatureEmptyPredictRule(),
+                       nltk_featurechart.FeatureBottomUpPredictRule(),
+                       nltk_featurechart.FeatureSingleEdgeFundamentalRule()]
+BU_LC_FEATURE_STRATEGY = [nltk_featurechart.LeafInitRule(),
+                          nltk_featurechart.FeatureEmptyPredictRule(),
+                          nltk_featurechart.FeatureBottomUpPredictCombineRule(),
+                          nltk_featurechart.FeatureSingleEdgeFundamentalRule()]
+
+
+def FeatureChartParser(grammar,
+                       strategy=BU_LC_FEATURE_STRATEGY,
+                       trace_chart_width=20,
+                       chart_class=nltk_featurechart,
+                       **parser_args):
+    return nltk_featurechart.FeatureChartParser(grammar, **parser_args)
+
+
+def FeatureTopDownChartParser(grammar, **parser_args):
+    return nltk_featurechart.FeatureTopDownChartParser(grammar, **parser_args)
+
+
+def FeatureBottomUpChartParser(grammar, **parser_args):
+    return nltk_featurechart.FeatureBottomUpChartParser(grammar, **parser_args)
+
+
+def FeatureBottomUpLeftCornerChartParser(grammar, **parser_args):
+    return nltk_featurechart.FeatureBottomUpLeftCornerChartParser(grammar, **parser_args)
+
+
+def InstantiateVarsChart(tokens):
+    """
+    A specialized chart that 'instantiates' variables whose names
+    start with '@', by replacing them with unique new variables.
+    In particular, whenever a complete edge is added to the chart, any
+    variables in the edge's ``lhs`` whose names start with '@' will be
+    replaced by unique new ``Variable``s.
+    """
+    return nltk_featurechart.InstantiateVarsChart(tokens)
 
 
 def teardown_module(module_in=None):
@@ -973,7 +1463,8 @@ def error_list(train_sents, test_sents):
 
 nltk_chartparser_app.app()
 nltk_rdparser_app.app()
-nltk_chart.demo()
+nltk_ccg_chart.demo()
+nltk_parse_chart.demo()
 nltk_dependencygraph.demo()
 nltk_earleychart.demo()
 nltk_featurechart.demo()
